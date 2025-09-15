@@ -101,81 +101,69 @@ async function convertNumberToDollars(amount: number) {
     }
 }
 
+async function resolveCountryCode(countryName: string) {
+    try {
+        const client = await soap.createClientAsync(countryInfoWsdl);
+        const [response] = await client.CountryISOCodeAsync({ sCountryName: countryName });
+        return response?.CountryISOCodeResult ?? null;
+    } catch (err) {
+        console.error("CountryInfo SOAP error:", err);
+        return null;
+    }
+}
+
 
 app.post("/api/check-books", async (req, res) => {
-    /*const { isbns } = req.body;
-    let isbnArray: string[] = [];
+    const {isbn, price, country} = req.body;
 
-    if (typeof isbns === "string") {
-        isbnArray = isbns.split(",").map((s) => s.trim());
-    } else if (Array.isArray(isbns)) {
-        isbnArray = isbns;
-    } else {
-        return res.status(400).json({ error: "isbns must be an array or comma-separated string" });
-    }
-
-    const results: any[] = [];
-
-    for (const isbn of isbnArray) {
-        try {
-            const valid = await validateISBN(isbn);
-            results.push({ isbn, valid });
-        } catch (err) {
-            console.error("Error validating ISBN:", err);
-            results.push({ isbn, valid: false, error: "Validation failed" });
-        }
-    }
-
-    res.json(results);*/
-
-    const {books} = req.body;
-
-    if(!Array.isArray(books)){
-        return res.status(400).json({error: "books r not an array"});
-    }
-
-    const results: any[] =[];
-
-    for(const book of books){
         try{
-            const {isbn, price, countryCode} = book;
             const valid = await validateISBN(isbn);
-
-            if (!valid) {
-                results.push({ isbn, valid: false, error: "Invalid ISBN" });
-                continue;
+            if(!valid) return res.json({isbn, valid: 'false', error: "Invalid isbn"})
+            
+            if(!price || !country){
+                return res.json({
+                    isbn, 
+                    valid: valid,
+                    summary: `Isbn ${isbn} is valid`
+                })
             }
+
+            const countryCode = await resolveCountryCode(country);
+            if(!countryCode) return res.json({
+                isbn, 
+                valid: valid,
+                error: "invalid country name/code"
+            })
 
             const currency = await getCountryCurrency(countryCode);
             if (!currency) {
-                results.push({ isbn, valid: true, error: "Could not fetch currency" });
-                continue;
+                return res.json({
+                    isbn,
+                    valid: valid,
+                    error: "Could not fetch currency"
+                });
             }
-
-            /*let convertedPrice: number | null = null;
-            if (targetCurrency && currency !== targetCurrency) {
-                convertedPrice = await convertCurrency(currency, targetCurrency, price);
-            }*/
 
             const priceInWords = await convertNumberToWords(price);
             const priceInDollars = await convertNumberToDollars(price);
 
-            results.push({
+            const summary = `ISBN ${isbn} is valid. Price: ${price} ${currency} (${priceInWords})`;
+
+            return res.json({
                 isbn,
-                valid: true,
+                valid: valid,
                 price,
                 currency,
                 priceInWords,
-                priceInDollars
+                priceInDollars,
+                summary
             });
-
-        }catch(err){
-            console.error("Error", err)
+        }catch(err: any){
+            console.error(err);
+            return res.json({ isbn, valid: false, error: err.message || "Unknown error" });
         }
     }
-
-    res.json(results)
-});
+)
 
 app.listen(4000, () => {
     console.log(`Server running on http://localhost:4000`);

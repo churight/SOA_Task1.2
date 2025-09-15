@@ -34,7 +34,6 @@ def validate_isbn(isbn: str) -> bool:
     return False
 
 def resolve_country_code(country: str) -> Optional[str]:
-    """Якщо ввели код → повертаємо його, якщо назву → шукаємо код"""
     country = country.strip()
     if len(country) == 2:  # вже ISO-код
         return country.upper()
@@ -58,25 +57,25 @@ async def check_book(book: BookRequest):
     try:
         valid = validate_isbn(isbn)
         if not valid:
-            return {"isbn": isbn, "valid": False, "error": "Invalid ISBN"}
+            return {"isbn": isbn, "valid": valid, "error": "Invalid ISBN"}
 
         if not price or not country:
-            return {"isbn": isbn, "valid": True, "summary": f"ISBN {isbn} is valid."}
+            return {"isbn": isbn, "valid": valid, "summary": f"ISBN {isbn} is valid."}
 
         country_code = resolve_country_code(country)
         if not country_code:
-            return {"isbn": isbn, "valid": True, "error": "Invalid country name/code"}
+            return {"isbn": isbn, "valid": valid, "error": "Invalid country name/code"}
 
         currency = get_country_currency(country_code)
         if not currency:
-            return {"isbn": isbn, "valid": True, "error": "Could not fetch currency"}
+            return {"isbn": isbn, "valid": valid, "error": "Could not fetch currency"}
 
         price_in_words = convert_number_to_words(price)
         summary = f"ISBN {isbn} is valid. Price: {price} {currency} ({price_in_words})"
 
         return {
             "isbn": isbn,
-            "valid": True,
+            "valid": valid,
             "price": price,
             "currency": currency,
             "priceInWords": price_in_words,
