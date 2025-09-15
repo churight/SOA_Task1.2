@@ -11,11 +11,15 @@ import "./IsbnChecker.css"
 interface Result {
   isbn: string;
   valid: boolean;
+  title: string;
+  authors: string[];
+  publishCountry: string;
   price?: number;
   priceInWords?: string;
   currency?: string;
   summary?: string;
   error?: string;
+
 }
 
 
@@ -116,6 +120,9 @@ const ISBNChecker = () => {
           <h2>Result</h2>
           <p><strong>ISBN:</strong> {result.isbn}</p>
           <p><strong>Valid:</strong> {result.valid ? '✅ Yes' : '❌ No'}</p>
+          {result.title && <p><strong>Title:</strong> {result.title}</p>}
+          {result.authors && <p><strong>Authors:</strong> {result.authors}</p>}
+           {result.publishCountry && <p><strong>Published in:</strong> {result.publishCountry}</p>}
           {result.price && <p><strong>Price:</strong> {result.price}</p>}
           {result.currency && <p><strong>Currency:</strong> {result.currency}</p>}
           {result.priceInWords && <p><strong>Price in Words:</strong> {result.priceInWords}</p>}

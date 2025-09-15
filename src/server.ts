@@ -28,7 +28,7 @@ async function validateISBN(isbn: string) {
     }
 }
 
-/*async function getBookData(isbn: string) {
+async function getBookData(isbn: string) {
     try {
         const url = `https://openlibrary.org/api/books?bibkeys=ISBN:${isbn}&jscmd=data&format=json`;
         const res = await fetch(url);
@@ -46,7 +46,7 @@ async function validateISBN(isbn: string) {
         console.error("Error fetching book data:", err);
         return { title: "Unknown", authors: "Unknown", publishCountry: "Unknown" };
     }
-}*/
+}
 
 async function getCountryCurrency(countryCode: string){
     const client = await soap.createClientAsync(countryInfoWsdl);
@@ -116,12 +116,17 @@ async function resolveCountryCode(countryName: string) {
 app.post("/api/check-books", async (req, res) => {
     const {isbn, price, country} = req.body;
 
+    const bookData = await getBookData(isbn);
+
         try{
             const valid = await validateISBN(isbn);
             if(!valid) return res.json({isbn, valid: 'false', error: "Invalid isbn"})
             
             if(!price || !country){
                 return res.json({
+                    title: bookData.title,
+                    authors: bookData.authors,
+                    publishCountry: bookData.publishCountry,
                     isbn, 
                     valid: valid,
                     summary: `Isbn ${isbn} is valid`
@@ -130,6 +135,9 @@ app.post("/api/check-books", async (req, res) => {
 
             const countryCode = await resolveCountryCode(country);
             if(!countryCode) return res.json({
+                title: bookData.title,
+                authors: bookData.authors,
+                publishCountry: bookData.publishCountry,
                 isbn, 
                 valid: valid,
                 error: "invalid country name/code"
@@ -138,6 +146,9 @@ app.post("/api/check-books", async (req, res) => {
             const currency = await getCountryCurrency(countryCode);
             if (!currency) {
                 return res.json({
+                    title: bookData.title,
+                    authors: bookData.authors,
+                    publishCountry: bookData.publishCountry,
                     isbn,
                     valid: valid,
                     error: "Could not fetch currency"
@@ -156,7 +167,10 @@ app.post("/api/check-books", async (req, res) => {
                 currency,
                 priceInWords,
                 priceInDollars,
-                summary
+                summary,
+                title: bookData.title,
+                authors: bookData.authors,
+                publishCountry: bookData.publishCountry,
             });
         }catch(err: any){
             console.error(err);
