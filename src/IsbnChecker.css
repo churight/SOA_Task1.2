@@ -1,0 +1,96 @@
+.checker-container {
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 30px;
+  border-radius: 12px;
+  background-color: #f9fafc;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.checker-title {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 5px;
+  color: #444;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  transition: border 0.2s;
+}
+
+.form-group input:focus {
+  border-color: #4a90e2;
+  outline: none;
+}
+
+.check-button {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  background-color: #4a90e2;
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.check-button:disabled {
+  background-color: #a5c3e6;
+  cursor: not-allowed;
+}
+
+.check-button:hover:not(:disabled) {
+  background-color: #357ab7;
+}
+
+.result-box {
+  margin-top: 20px;
+  padding: 15px;
+  border-radius: 8px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  transition: background-color 0.3s ease;
+}
+
+.result-box h2 {
+  margin-top: 0;
+  color: #333;
+}
+
+.error {
+  color: #b71c1c;
+  font-weight: 600;
+}
+
+.error-bg {
+  background-color: #f8d7da; /* червоне тло */
+  border-color: #f5c2c7;
+}
+
+.success-bg {
+  background-color: #d4edda; /* зелене тло */
+  border-color: #c3e6cb;
+}
+
+.neutral-bg {
+  background-color: #fff;
+  border-color: #ddd;
+}
