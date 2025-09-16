@@ -30,33 +30,11 @@ const ISBNChecker = () => {
   const [result, setResult] = useState<Result | null>(null);
   const [loading, setLoading] = useState(false);
 
-  /*const handleCheck = async () => {
-    try {
-      const books: Book[] = booksInput
-        .split('\n')
-        .map(line => line.trim())
-        .filter(line => line)
-        .map(line => {
-          const [isbn, priceStr, countryCode] = line.split(',').map(s => s.trim());
-          return { isbn, price: parseFloat(priceStr), countryCode };
-        });
-
-      setLoading(true);
-      const res = await axios.post('http://localhost:4000/api/check-books', { books });
-      setResults(res.data);
-    } catch (err) {
-      console.error(err);
-      alert('Error fetching results');
-    } finally {
-      setLoading(false);
-    }
-  };*/
-
   const handleCheck = async() =>{
     try{
         setLoading(true);
 
-        const res = await axios.post('http://localhost:4000/api/check-books', {
+        const res = await axios.post('http://localhost:4000/check-books', {
           isbn,
           price: price ? parseFloat(price): null,
           country: country || null

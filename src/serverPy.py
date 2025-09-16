@@ -73,7 +73,7 @@ def get_books_data(isbn: str):
         print("Error fetching book data:", e)
         return {"title": "Unknown", "authors": "Unknown", "publishCountry": "Unknown"}
 
-@app.post('/api/check-books')
+@app.post('/check-books')
 async def check_book(book: BookRequest):
     isbn, price, country = book.isbn, book.price, book.country
 

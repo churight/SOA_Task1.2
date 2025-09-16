@@ -113,7 +113,7 @@ async function resolveCountryCode(countryName: string) {
 }
 
 
-app.post("/api/check-books", async (req, res) => {
+app.post("/check-books", async (req, res) => {
     const {isbn, price, country} = req.body;
 
     const bookData = await getBookData(isbn);
