@@ -15,7 +15,7 @@ Has to be started from /src folder
 
 Runs on [http://localhost:4000](http://localhost:4000) 
 
-Has only @post /api/check-books route
+Has only @post /check-books route
 
 ### `uvicorn serverPy:app --host localhost --port 4000 --reload`
 
@@ -24,4 +24,4 @@ Has to be started from /src folder
 
 Runs on [http://localhost:4000](http://localhost:4000) 
 
-Has only @post /api/check-books route
+Has only @post /check-books route
