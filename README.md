@@ -1,5 +1,9 @@
 # Commands needed to run everything
 
+### `npm install`
+
+To install all relevant packages for this project
+
 ### `npm start`
 
 Start React in development mode
